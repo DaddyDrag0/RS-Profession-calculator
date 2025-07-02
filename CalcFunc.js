@@ -1,23 +1,12 @@
-/* Full-width whitespace focus :contentReference[oaicite:6]{index=6} */
-body { margin:0; font-family: sans-serif; background:#fff; color:#111; }
-.container {
-  max-width: 400px;
-  margin: 4rem auto;
-  padding: 1rem;
-}
-h1 { text-align:center; margin-bottom:1.5rem; }
-form { display:flex; flex-direction:column; gap:1rem; }
-select, input, button {
-  padding:0.75rem;
-  font-size:1rem;
-  border:1px solid #ccc;
-  border-radius:4px;
-  width:100%;
-}
-button {
-  background:#0066cc; /* single accent color :contentReference[oaicite:7]{index=7} */
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
 
+// Rapid calculation with minimal overhead
+document.getElementById('xp-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const curL = +document.getElementById('currentLevel').value;
+  const curX = +document.getElementById('currentXp').value;
+  const tgtL = +document.getElementById('targetLevel').value;
+  // Simple XP curve formula
+  const xpNeeded = (tgtL - curL) * 1000 - curX;
+  document.getElementById('results').innerHTML =
+    `<p>You need <strong>${xpNeeded}</strong> XP.</p>`;
+});
