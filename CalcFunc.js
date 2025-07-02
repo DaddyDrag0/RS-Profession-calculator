@@ -143,16 +143,30 @@ actionBtn.addEventListener('click', () => {
 
 // Update Table
 updateTableBtn.addEventListener('click', () => {
-  const base = +tableAction.value;
-  if (!currentProf||!base) return;
-  const boostPct = [...boostsTable].reduce((s,cb)=>s+(cb.checked?+cb.value:0),0);
+  const base     = +tableAction.value;
+  if (!currentProf || !base) return;
+  const boostPct = [...boostsTable].reduce((s, cb) => s + (cb.checked ? +cb.value : 0), 0);
+
+  // clear out any existing rows
   levelTable.innerHTML = '';
+
+  let grandTotal = 0;
+
+  // build one row per level
   for (let lvl = 0; lvl < 60; lvl++) {
-    const xpNeed = xpRequirements[lvl];
-    const xpPerAct = base * (levelMultipliers[lvl]||1) * (1+boostPct/100);
-    const acts = Math.ceil(xpNeed / xpPerAct);
+    const xpNeed   = xpRequirements[lvl];
+    const xpPerAct = base * (levelMultipliers[lvl] || 1) * (1 + boostPct / 100);
+    const acts     = Math.ceil(xpNeed / xpPerAct);
+    grandTotal    += acts;
+
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${lvl} → ${lvl+1}</td><td>${acts}</td>`;
+    tr.innerHTML = `<td>${lvl} → ${lvl + 1}</td><td>${acts}</td>`;
     levelTable.append(tr);
   }
+
+  // append the Total row
+  const totalRow = document.createElement('tr');
+  totalRow.style.fontWeight = 'bold';
+  totalRow.innerHTML = `<td>Total</td><td>${grandTotal}</td>`;
+  levelTable.append(totalRow);
 });
