@@ -7,7 +7,7 @@ const xpOptions = {
   Alchemy:    [{label:"IN DEV",value:0}],
   Fishing:    [{label:"IN DEV",value:0}]
 };
-// Merge all for the leveling table
+// Merge all for leveling
 xpOptions.Leveling = [
   ...xpOptions.Foraging,
   ...xpOptions.Mining,
@@ -64,14 +64,13 @@ const tgtLevelEl     = document.getElementById('target-level');
 const boostsEls      = document.querySelectorAll('.boost');
 const boostsTable    = document.querySelectorAll('.boost-table');
 const actionsEl      = document.getElementById('actions-needed');
-const historyLog     = document.getElementById('history-log');
 const calcBtn        = document.getElementById('calculate-btn');
 const updateTableBtn = document.getElementById('update-table-btn');
 const levelTableBody = document.querySelector('#level-table tbody');
 
 let currentProf = null;
 
-// Populate dropdown helper
+// Dropdown helper
 function populateActions(profKey, dropdown) {
   dropdown.innerHTML = '<option value="">-- Select Action --</option>';
   xpOptions[profKey].forEach(opt => {
@@ -82,15 +81,7 @@ function populateActions(profKey, dropdown) {
   });
 }
 
-// Record history helper
-function recordHistory(html) {
-  const div = document.createElement('div');
-  div.className = 'history-entry';
-  div.innerHTML = html;
-  historyLog.prepend(div);
-}
-
-// Sidebar click: toggle views, populate dropdowns
+// Sidebar click: toggle views & populate
 profItems.forEach(li => {
   li.addEventListener('click', () => {
     profItems.forEach(el => el.classList.remove('active'));
@@ -109,16 +100,15 @@ profItems.forEach(li => {
       populateActions(currentProf, tableAction);
     }
 
-    // reset inputs & outputs
+    // Reset inputs/outputs
     curLevelEl.value = curXpEl.value = tgtLevelEl.value = '';
     xpActionEl.value = tableAction.value = '';
     actionsEl.textContent = '—';
-    historyLog.innerHTML = '';
     levelTableBody.innerHTML = '';
   });
 });
 
-// Calculate: fractional sum then ceil once
+// Calculate: sum fractions then ceil once
 calcBtn.addEventListener('click', () => {
   const cl    = +curLevelEl.value;
   const curXp = +curXpEl.value;
@@ -137,13 +127,9 @@ calcBtn.addEventListener('click', () => {
 
   const totalActions = Math.ceil(sumActs);
   actionsEl.textContent = totalActions;
-  recordHistory(
-    `<strong>${verbMap[currentProf] || 'Action'}</strong> ${currentProf}: ` +
-    `L${cl}→L${tl}, Actions: <strong>${totalActions}</strong>`
-  );
 });
 
-// Update Table: per-level ceil + total
+// Update Table: per-level ceil + total row
 updateTableBtn.addEventListener('click', () => {
   const base = +tableAction.value;
   if (!currentProf || !base) return;
@@ -164,6 +150,7 @@ updateTableBtn.addEventListener('click', () => {
     levelTableBody.appendChild(tr);
   }
 
+  // Total row
   const totalRow = document.createElement('tr');
   totalRow.style.fontWeight = 'bold';
   totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
