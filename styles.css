@@ -126,12 +126,17 @@ body {
   cursor:pointer; z-index:1000;
 }
 .phone-calc {
-  position:absolute; top:80px; left:calc(50% - 160px);
-  width:320px; background:#2e2e2e;
-  border-top-left-radius:20px; border-top-right-radius:20px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.5);
-  z-index:1000;
+  position: absolute;          /* instead of fixed/bottom:0 */
+  top: 80px;                   /* initial position */
+  left: calc(50% - 160px);     /* center horizontally */
+  width: 320px;
+  background: #2e2e2e;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 1000;
 }
+
+
 .phone-calc.hidden { display:none; }
 .phone-calc-header {
   display:flex; justify-content:space-between; align-items:center;
