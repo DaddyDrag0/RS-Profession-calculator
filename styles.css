@@ -165,3 +165,28 @@ body {
 #phone-calc-equals { background:#0a84ff; color:#fff; }
 #phone-calc-clear { grid-column:span 2; background:#b22121; }
 
+/* Credits link buttons — place at the very end of styles.css */
+#view-credits .card .link-button {
+  display: block;            /* full-width look */
+  width: 100%;
+  text-decoration: none;     /* remove underline */
+  text-align: center;
+  padding: 0.75rem;
+  margin: 0.5rem 0;           /* spacing between buttons */
+  border-radius: 12px;
+  background: #393939;
+  color: #e0e0e0;
+  box-shadow:
+    inset 4px 4px 8px #222,
+    inset -4px -4px 8px #3a3a3a;
+  transition: box-shadow 0.1s;
+  cursor: pointer;           /* indicate clickability */
+}
+
+/* Hover/focus state */
+#view-credits .card .link-button:hover,
+#view-credits .card .link-button:focus {
+  box-shadow:
+    inset 2px 2px 4px #222,
+    inset -2px -2px 4px #3a3a3a;
+}
