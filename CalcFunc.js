@@ -120,7 +120,7 @@ profItems.forEach(li => {
   });
 });
 
-// Calculate button: sum fractional actions level-by-level, then ceil once
+// Calculate button: sum fractional actions then ceil once
 calcBtn.addEventListener('click', () => {
   const cl    = +curLevelEl.value;
   const curXp = +curXpEl.value;
