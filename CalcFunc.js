@@ -1,13 +1,27 @@
-// Data Maps
+// CalcFunc.js
+
+// -------- Data Maps --------
 const xpOptions = {
-  Foraging:   [{label:"Oak",value:25},{label:"Pine",value:50},{label:"Greatwood",value:75},{label:"Lakewood",value:100},{label:"Ashwood",value:125},{label:"Palm",value:150},{label:"Frostpine",value:175}],
-  Mining:     [{label:"Copper",value:25},{label:"Iron",value:50},{label:"Silver",value:75},{label:"Platinum",value:100},{label:"Mithril",value:125},{label:"Zirc",value:150},{label:"Cobalt",value:175}],
-  Harvesting: [{label:"Cotton",value:25},{label:"Flax",value:50},{label:"Silk",value:75},{label:"Lilyleaf",value:100},{label:"Scorchleaf",value:125},{label:"Cocoleaf",value:150},{label:"Frostleaf",value:175}],
+  Foraging:   [
+    {label:"Oak",value:25},{label:"Pine",value:50},{label:"Greatwood",value:75},
+    {label:"Lakewood",value:100},{label:"Ashwood",value:125},{label:"Palm",value:150},
+    {label:"Frostpine",value:175}
+  ],
+  Mining:     [
+    {label:"Copper",value:25},{label:"Iron",value:50},{label:"Silver",value:75},
+    {label:"Platinum",value:100},{label:"Mithril",value:125},{label:"Zirc",value:150},
+    {label:"Cobalt",value:175}
+  ],
+  Harvesting: [
+    {label:"Cotton",value:25},{label:"Flax",value:50},{label:"Silk",value:75},
+    {label:"Lilyleaf",value:100},{label:"Scorchleaf",value:125},
+    {label:"Cocoleaf",value:150},{label:"Frostleaf",value:175}
+  ],
   Herbalist:  [{label:"IN DEV",value:0}],
   Alchemy:    [{label:"IN DEV",value:0}],
   Fishing:    [{label:"IN DEV",value:0}]
 };
-// Merge all for leveling
+// merge all into one for the Leveling Requirements page
 xpOptions.Leveling = [
   ...xpOptions.Foraging,
   ...xpOptions.Mining,
@@ -51,11 +65,12 @@ const verbMap = {
   Fishing:    "Fished"
 };
 
-// Element refs
+// -------- Element References --------
 const profItems      = document.querySelectorAll('#profession-list li');
 const selProfEl      = document.getElementById('selected-prof');
 const viewCalc       = document.getElementById('view-calculator');
 const viewLvl        = document.getElementById('view-leveling');
+const viewCredits    = document.getElementById('view-credits');
 const xpActionEl     = document.getElementById('xp-action');
 const tableAction    = document.getElementById('table-action');
 const curLevelEl     = document.getElementById('current-level');
@@ -70,7 +85,7 @@ const levelTableBody = document.querySelector('#level-table tbody');
 
 let currentProf = null;
 
-// Dropdown helper
+// -------- Helper Functions --------
 function populateActions(profKey, dropdown) {
   dropdown.innerHTML = '<option value="">-- Select Action --</option>';
   xpOptions[profKey].forEach(opt => {
@@ -81,7 +96,7 @@ function populateActions(profKey, dropdown) {
   });
 }
 
-// Sidebar click: toggle views & populate
+// -------- Sidebar Navigation --------
 profItems.forEach(li => {
   li.addEventListener('click', () => {
     profItems.forEach(el => el.classList.remove('active'));
@@ -89,18 +104,25 @@ profItems.forEach(li => {
     currentProf = li.dataset.prof;
     selProfEl.textContent = currentProf;
 
+    // Show/hide views
     if (currentProf === 'Leveling') {
       viewCalc.classList.remove('active');
+      viewCredits.classList.remove('active');
       viewLvl.classList.add('active');
       populateActions('Leveling', tableAction);
+    } else if (currentProf === 'Credits') {
+      viewCalc.classList.remove('active');
+      viewLvl.classList.remove('active');
+      viewCredits.classList.add('active');
     } else {
       viewLvl.classList.remove('active');
+      viewCredits.classList.remove('active');
       viewCalc.classList.add('active');
       populateActions(currentProf, xpActionEl);
       populateActions(currentProf, tableAction);
     }
 
-    // Reset inputs/outputs
+    // Reset inputs and outputs
     curLevelEl.value = curXpEl.value = tgtLevelEl.value = '';
     xpActionEl.value = tableAction.value = '';
     actionsEl.textContent = '—';
@@ -108,7 +130,7 @@ profItems.forEach(li => {
   });
 });
 
-// Calculate: sum fractions then ceil once
+// -------- XP Calculator Logic --------
 calcBtn.addEventListener('click', () => {
   const cl    = +curLevelEl.value;
   const curXp = +curXpEl.value;
@@ -116,69 +138,50 @@ calcBtn.addEventListener('click', () => {
   const base  = +xpActionEl.value;
   if (!currentProf || isNaN(cl) || isNaN(curXp) || isNaN(tl) || !base) return;
 
-  const boostPct = Array.from(boostsEls).reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
-  let sumActs = 0;
+  const boostPct = Array.from(boostsEls)
+    .reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
 
+  let sumActs = 0;
   for (let lvl = cl; lvl < tl; lvl++) {
-    const xpToNext = (lvl === cl ? xpRequirements[lvl] - curXp : xpRequirements[lvl]);
-    const xpPerAct = base * (levelMultipliers[lvl] || 1) * (1 + boostPct / 100);
+    const xpToNext = (lvl === cl
+      ? xpRequirements[lvl] - curXp
+      : xpRequirements[lvl]);
+    const xpPerAct = base
+      * (levelMultipliers[lvl] || 1)
+      * (1 + boostPct / 100);
     sumActs += xpToNext / xpPerAct;
   }
 
-  const totalActions = Math.ceil(sumActs);
-  actionsEl.textContent = totalActions;
+  actionsEl.textContent = Math.ceil(sumActs);
 });
 
-// Update Table: per-level ceil + total row
+// -------- Leveling Table Logic --------
 updateTableBtn.addEventListener('click', () => {
   const base = +tableAction.value;
   if (!currentProf || !base) return;
-  const boostPct = Array.from(boostsTable).reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
+  const boostPct = Array.from(boostsTable)
+    .reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
 
   levelTableBody.innerHTML = '';
   let grandTotal = 0;
 
   for (let lvl = 0; lvl < 60; lvl++) {
     const xpNeed   = xpRequirements[lvl];
-    const xpPerAct = base * (levelMultipliers[lvl] || 1) * (1 + boostPct / 100);
+    const xpPerAct = base
+      * (levelMultipliers[lvl] || 1)
+      * (1 + boostPct / 100);
     const actsFrac = xpNeed / xpPerAct;
     const actsCeil = Math.ceil(actsFrac);
-    grandTotal += actsFrac;
+    grandTotal     += actsFrac;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${lvl} → ${lvl + 1}</td><td>${actsCeil}</td>`;
     levelTableBody.appendChild(tr);
   }
 
-  // Total row
+  // Append bold Total row
   const totalRow = document.createElement('tr');
   totalRow.style.fontWeight = 'bold';
   totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
   levelTableBody.appendChild(totalRow);
 });
-
-/* Credits list */
-.credits-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
-.credits-list li {
-  margin-bottom: 0.75rem;
-  font-size: 1rem;
-}
-.credits-list a {
-  color: #4caf50;
-  text-decoration: none;
-  word-break: break-all;
-}
-
-/* “Made by” box */
-.madeby-box {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #393939;
-  border-radius: 12px;
-  text-align: center;
-  font-weight: bold;
-}
