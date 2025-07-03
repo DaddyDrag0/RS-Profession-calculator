@@ -156,3 +156,29 @@ updateTableBtn.addEventListener('click', () => {
   totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
   levelTableBody.appendChild(totalRow);
 });
+
+/* Credits list */
+.credits-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.credits-list li {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+.credits-list a {
+  color: #4caf50;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+/* “Made by” box */
+.madeby-box {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #393939;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+}
