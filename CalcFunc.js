@@ -172,26 +172,40 @@ document.getElementById('phone-calc-clear').addEventListener('click',()=>{
 });
 
 // Draggable logic (any direction)
-const header = container.querySelector('.phone-calc-header');
-let dragging=false, offsetX=0, offsetY=0;
-header.addEventListener('mousedown', e=>{
-  dragging=true;
-  const rect = container.getBoundingClientRect();
+const calcWin = document.getElementById('phone-calc-container');
+const header  = calcWin.querySelector('.phone-calc-header');
+let dragging = false, offsetX = 0, offsetY = 0;
+
+header.addEventListener('mousedown', e => {
+  dragging = true;
+  const rect = calcWin.getBoundingClientRect();
   offsetX = e.clientX - rect.left;
   offsetY = e.clientY - rect.top;
-  document.body.style.userSelect='none';
+  document.body.style.userSelect = 'none';
 });
-document.addEventListener('mousemove', e=>{
+
+document.addEventListener('mousemove', e => {
   if (!dragging) return;
-  container.style.left = (e.clientX - offsetX) + 'px';
-  container.style.top  = (e.clientY - offsetY) + 'px';
+  // compute new positions
+  let x = e.clientX - offsetX;
+  let y = e.clientY - offsetY;
+  // optional: clamp to viewport
+  const maxX = window.innerWidth  - calcWin.offsetWidth;
+  const maxY = window.innerHeight - calcWin.offsetHeight;
+  x = Math.max(0, Math.min(x, maxX));
+  y = Math.max(0, Math.min(y, maxY));
+  // apply
+  calcWin.style.left = x + 'px';
+  calcWin.style.top  = y + 'px';
 });
-document.addEventListener('mouseup', ()=>{
+
+document.addEventListener('mouseup', () => {
   if (dragging) {
-    dragging=false;
-    document.body.style.userSelect='';
+    dragging = false;
+    document.body.style.userSelect = '';
   }
 });
+
 document.addEventListener('DOMContentLoaded', () => {
   if (profItems.length) profItems[0].click();
 });
