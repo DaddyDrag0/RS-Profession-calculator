@@ -182,3 +182,39 @@ document.getElementById('phone-calc-equals').addEventListener('click', () => {
 document.getElementById('phone-calc-clear').addEventListener('click', () => {
   expr=''; display.textContent='0';
 });
+// Draggable phone calculator
+const header = document.querySelector('.phone-calc-header');
+const container = document.getElementById('phone-calc-container');
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+header.addEventListener('mousedown', e => {
+  isDragging = true;
+  // calculate cursor’s offset within the container
+  const rect = container.getBoundingClientRect();
+  dragOffsetX = e.clientX - rect.left;
+  dragOffsetY = e.clientY - rect.top;
+  document.body.style.userSelect = 'none'; // prevent text-selection
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  // new position = mouse position minus initial offset
+  let newLeft = e.clientX - dragOffsetX;
+  let newTop  = e.clientY - dragOffsetY;
+  // Optional: constrain within viewport
+  const maxLeft = window.innerWidth  - container.offsetWidth;
+  const maxTop  = window.innerHeight - container.offsetHeight;
+  newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+  newTop  = Math.max(0, Math.min(newTop, maxTop));
+  container.style.left = newLeft + 'px';
+  container.style.top  = newTop  + 'px';
+});
+
+document.addEventListener('mouseup', () => {
+  if (isDragging) {
+    isDragging = false;
+    document.body.style.userSelect = ''; // restore selection
+  }
+});
