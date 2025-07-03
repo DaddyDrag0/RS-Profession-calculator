@@ -17,8 +17,32 @@ const xpOptions = {
     {label:"Lilyleaf",value:100},{label:"Scorchleaf",value:125},
     {label:"Cocoleaf",value:150},{label:"Frostleaf",value:175}
   ],
-  Herbalist:  [{label:"IN DEV",value:0}],
-  Alchemy:    [{label:"IN DEV",value:0}],
+  Herbalist:  [
+    {label:"Apple",       value:15},
+    {label:"Moss",        value:15},
+    {label:"Vitalshroom", value:15},
+    {label:"Lumishroom",  value:15},
+    {label:"Pineroot",    value:15},
+    {label:"Bahstalk",    value:15},
+    {label:"Coconut",     value:15}
+  ],
+  Alchemy: [
+    {label:"Lesser Health Potion",         value: 75 },
+    {label:"Health Potion",                value: 75 },
+    {label:"Greater Health Potion",        value: 75 },
+    {label:"Lesser Mana Potion",           value: 75 },
+    {label:"Mana Potion",                  value: 75 },
+    {label:"Greater Mana Potion",          value: 75 },
+    {label:"Lesser Strength Potion",       value: 75 },
+    {label:"Strength Potion",              value: 75 },
+    {label:"Greater Strength Potion",      value: 75 },
+    {label:"Lesser Agility Potion",        value: 75 },
+    {label:"Agility Potion",               value: 75 },
+    {label:"Greater Agility Potion",       value: 75 },
+    {label:"Heat Protection Potion",       value: 75 },
+    {label:"Cold Protection Potion",       value: 75 }
+  ],
+
   Fishing:    [{label:"IN DEV",value:0}]
 };
 // merge all into one for the Leveling Requirements page
