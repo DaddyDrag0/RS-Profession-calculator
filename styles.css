@@ -149,3 +149,45 @@ body {
   font-size:.9rem; line-height:1.3;
 }
 .history-entry:last-child { border-bottom:none; }
+/* Mini calculator hidden by default */
+.mini-calc {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  max-width: 400px;
+}
+
+/* Toggle button styling (same as other buttons) */
+.mini-calc-toggle {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: #393939;
+  color: #e0e0e0;
+  box-shadow:
+    4px 4px 8px #222,
+    -4px -4px 8px #3a3a3a;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.mini-calc-toggle:active {
+  box-shadow:
+    inset 4px 4px 8px #222,
+    inset -4px -4px 8px #3a3a3a;
+}
+
+/* Mini-calc heading */
+.mini-calc h3 {
+  margin-top: 0;
+  text-align: center;
+  color: #f0f0f0;
+}
+
+/* Mini-calc result styling */
+#mc-result {
+  font-weight: bold;
+  color: #fff;
+}
