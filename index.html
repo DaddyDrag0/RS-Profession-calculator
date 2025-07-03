@@ -155,19 +155,44 @@
   </section>
 
 
-  <!-- Phone-style Calculator Toggle & Draggable Overlay -->
+   <!-- Phone‐style Calculator Toggle & Draggable Overlay -->
   <button id="open-phone-calc" class="phone-calc-toggle">📱 Calculator</button>
-  <div id="phone-calc-container" class="phone-calc hidden">
-    <div class="phone-calc-header"><span>Calculator</span><button id="close-phone-calc">✕</button></div>
-    <div id="phone-calc-display">0</div>
-    <div class="phone-calc-buttons">
+  <div
+    id="phone-calc-container"
+    class="phone-calc hidden"
+    style="
+      position: absolute;
+      top: 80px;
+      left: calc(50% - 190px);
+      width: 380px;      /* was 320px, now a bit wider */
+      font-size: 1.1rem; /* bump up overall font size */
+    "
+  >
+    <div class="phone-calc-header">
+      <span>Calculator</span>
+      <button id="close-phone-calc">✕</button>
+    </div>
+
+    <!-- Display -->
+    <div
+      id="phone-calc-display"
+      style="
+        padding: 1rem;
+        font-size: 2rem;    /* larger digits */
+        height: 3rem;
+      "
+    >0</div>
+
+    <!-- Buttons -->
+    <div class="phone-calc-buttons" style="gap: 0.75rem;">
       <button data-val="7">7</button><button data-val="8">8</button><button data-val="9">9</button><button data-op="/">÷</button>
       <button data-val="4">4</button><button data-val="5">5</button><button data-val="6">6</button><button data-op="*">×</button>
       <button data-val="1">1</button><button data-val="2">2</button><button data-val="3">3</button><button data-op="-">−</button>
       <button data-val="0">0</button><button data-val=".">.</button><button id="phone-calc-equals">=</button><button data-op="+">＋</button>
-      <button id="phone-calc-clear">AC</button>
+      <button id="phone-calc-clear" style="grid-column: span 2;">AC</button>
     </div>
   </div>
+
 
   <script src="CalcFunc.js"></script>
 </body>
