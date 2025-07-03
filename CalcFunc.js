@@ -7,15 +7,15 @@ const xpOptions = {
   Alchemy:    [{label:"IN DEV",value:0}],
   Fishing:    [{label:"IN DEV",value:0}]
 };
-// merge all for leveling
-xpOptions.Leveling = [].concat(
-  xpOptions.Foraging,
-  xpOptions.Mining,
-  xpOptions.Harvesting,
-  xpOptions.Herbalist,
-  xpOptions.Alchemy,
-  xpOptions.Fishing
-);
+// Merge all for the Leveling Requirements view
+xpOptions.Leveling = [
+  ...xpOptions.Foraging,
+  ...xpOptions.Mining,
+  ...xpOptions.Harvesting,
+  ...xpOptions.Herbalist,
+  ...xpOptions.Alchemy,
+  ...xpOptions.Fishing
+];
 
 const xpRequirements = {
   0:100,1:250,2:400,3:600,4:1000,5:1500,6:2000,7:3000,8:4000,9:7000,
@@ -43,43 +43,47 @@ const levelMultipliers = {
 };
 
 const verbMap = {
-  Foraging:"Foraged",Mining:"Mined",Harvesting:"Harvested",
-  Herbalist:"Brewed",Alchemy:"Crafted",Fishing:"Fished"
+  Foraging:   "Foraged",
+  Mining:     "Mined",
+  Harvesting: "Harvested",
+  Herbalist:  "Brewed",
+  Alchemy:    "Crafted",
+  Fishing:    "Fished"
 };
 
-// Elements
-const profItems    = document.querySelectorAll('#profession-list li');
-const selProfEl    = document.getElementById('selected-prof');
-const viewCalc     = document.getElementById('view-calculator');
-const viewLvl      = document.getElementById('view-leveling');
-const xpActionEl   = document.getElementById('xp-action');
-const tableAction  = document.getElementById('table-action');
-const curLevelEl   = document.getElementById('current-level');
-const curXpEl      = document.getElementById('current-xp');
-const tgtLevelEl   = document.getElementById('target-level');
-const boostsEls    = document.querySelectorAll('.boost');
-const boostsTable  = document.querySelectorAll('.boost-table');
-const actionsEl    = document.getElementById('actions-needed');
-const historyLog   = document.getElementById('history-log');
-const calcBtn      = document.getElementById('calculate-btn');
-const actionBtn    = document.getElementById('action-btn');
+// Element references
+const profItems      = document.querySelectorAll('#profession-list li');
+const selProfEl      = document.getElementById('selected-prof');
+const viewCalc       = document.getElementById('view-calculator');
+const viewLvl        = document.getElementById('view-leveling');
+const xpActionEl     = document.getElementById('xp-action');
+const tableAction    = document.getElementById('table-action');
+const curLevelEl     = document.getElementById('current-level');
+const curXpEl        = document.getElementById('current-xp');
+const tgtLevelEl     = document.getElementById('target-level');
+const boostsEls      = document.querySelectorAll('.boost');
+const boostsTable    = document.querySelectorAll('.boost-table');
+const actionsEl      = document.getElementById('actions-needed');
+const historyLog     = document.getElementById('history-log');
+const calcBtn        = document.getElementById('calculate-btn');
+const actionBtn      = document.getElementById('action-btn');
 const updateTableBtn = document.getElementById('update-table-btn');
-const levelTable   = document.querySelector('#level-table tbody');
+const levelTableBody = document.querySelector('#level-table tbody');
 
 let currentProf = null;
 
-// Populate dropdown
-function populateActions(prof, el) {
-  el.innerHTML = '<option value="">-- Select Action --</option>';
-  xpOptions[prof].forEach(o => {
-    const opt = document.createElement('option');
-    opt.value = o.value;
-    opt.textContent = `${o.label} (${o.value} XP)`;
-    el.append(opt);
+// Helper to populate a dropdown with xpOptions
+function populateActions(profKey, dropdownEl) {
+  dropdownEl.innerHTML = '<option value="">-- Select Action --</option>';
+  xpOptions[profKey].forEach(opt => {
+    const o = document.createElement('option');
+    o.value = opt.value;
+    o.textContent = `${opt.label} (${opt.value} XP)`;
+    dropdownEl.appendChild(o);
   });
 }
 
-// Record history
+// Helper to record a history entry
 function recordHistory(html) {
   const div = document.createElement('div');
   div.className = 'history-entry';
@@ -87,10 +91,10 @@ function recordHistory(html) {
   historyLog.prepend(div);
 }
 
-// Sidebar click
+// Sidebar click handler: switch views and populate dropdowns
 profItems.forEach(li => {
   li.addEventListener('click', () => {
-    profItems.forEach(x=>x.classList.remove('active'));
+    profItems.forEach(el => el.classList.remove('active'));
     li.classList.add('active');
     currentProf = li.dataset.prof;
     selProfEl.textContent = currentProf;
@@ -107,66 +111,69 @@ profItems.forEach(li => {
       actionBtn.textContent = verbMap[currentProf] || 'Act';
     }
 
-    // Reset
+    // reset inputs and outputs
     curLevelEl.value = curXpEl.value = tgtLevelEl.value = '';
     xpActionEl.value = tableAction.value = '';
     actionsEl.textContent = '—';
     historyLog.innerHTML = '';
-    levelTable.innerHTML = '';
+    levelTableBody.innerHTML = '';
   });
 });
 
-// Calculate
+// Calculate button: sum fractional actions level-by-level, then ceil once
 calcBtn.addEventListener('click', () => {
-  const cl = +curLevelEl.value, curXp = +curXpEl.value, tl = +tgtLevelEl.value;
-  const base = +xpActionEl.value;
-  if (!currentProf||isNaN(cl)||isNaN(curXp)||isNaN(tl)||!base) return;
-  let totalActs = 0;
+  const cl    = +curLevelEl.value;
+  const curXp = +curXpEl.value;
+  const tl    = +tgtLevelEl.value;
+  const base  = +xpActionEl.value;
+  if (!currentProf || isNaN(cl) || isNaN(curXp) || isNaN(tl) || !base) return;
+
+  const boostPct = Array.from(boostsEls).reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
+  let sumActs = 0;
+
   for (let lvl = cl; lvl < tl; lvl++) {
-    const xpNeed = (lvl === cl ? xpRequirements[lvl] - curXp : xpRequirements[lvl]);
-    const xpPerAct = base * (levelMultipliers[lvl]||1);
-    const boostPct = [...boostsEls].reduce((s,cb)=>s+(cb.checked?+cb.value:0),0);
-    const xpBoosted = xpPerAct * (1+boostPct/100);
-    totalActs += Math.ceil(xpNeed / xpBoosted);
+    const xpToNext = (lvl === cl ? xpRequirements[lvl] - curXp : xpRequirements[lvl]);
+    const xpPerAct = base * (levelMultipliers[lvl] || 1) * (1 + boostPct / 100);
+    sumActs += xpToNext / xpPerAct;
   }
-  actionsEl.textContent = totalActs;
+
+  const totalActions = Math.ceil(sumActs);
+  actionsEl.textContent = totalActions;
   recordHistory(
     `<strong>${verbMap[currentProf]}</strong> ${currentProf}: ` +
-    `L${cl}→L${tl}, Actions: <strong>${totalActs}</strong>`
+    `L${cl}→L${tl}, Actions: <strong>${totalActions}</strong>`
   );
 });
 
-// Perform Action
+// Perform Action button (advances level + excess XP logic, plus popup)
 actionBtn.addEventListener('click', () => {
-  alert("Perform Action advances level and carries over excess XP (not shown).");
+  alert("Perform Action will advance your level and carry over excess XP. Remember to rejoin for multipliers to update.");
 });
 
-// Update Table
+// Update Table button: build per-level rows, show ceil’d per-row, then show a Total row
 updateTableBtn.addEventListener('click', () => {
   const base     = +tableAction.value;
   if (!currentProf || !base) return;
-  const boostPct = [...boostsTable].reduce((s, cb) => s + (cb.checked ? +cb.value : 0), 0);
+  const boostPct = Array.from(boostsTable).reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
 
-  // clear out any existing rows
-  levelTable.innerHTML = '';
-
+  levelTableBody.innerHTML = '';
   let grandTotal = 0;
 
-  // build one row per level
   for (let lvl = 0; lvl < 60; lvl++) {
     const xpNeed   = xpRequirements[lvl];
     const xpPerAct = base * (levelMultipliers[lvl] || 1) * (1 + boostPct / 100);
-    const acts     = Math.ceil(xpNeed / xpPerAct);
-    grandTotal    += acts;
+    const actsFrac = xpNeed / xpPerAct;
+    const actsCeil = Math.ceil(actsFrac);
+    grandTotal += actsFrac;
 
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${lvl} → ${lvl + 1}</td><td>${acts}</td>`;
-    levelTable.append(tr);
+    tr.innerHTML = `<td>${lvl} → ${lvl + 1}</td><td>${actsCeil}</td>`;
+    levelTableBody.appendChild(tr);
   }
 
-  // append the Total row
+  // Append a bold Total row
   const totalRow = document.createElement('tr');
   totalRow.style.fontWeight = 'bold';
-  totalRow.innerHTML = `<td>Total</td><td>${grandTotal}</td>`;
-  levelTable.append(totalRow);
+  totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
+  levelTableBody.appendChild(totalRow);
 });
