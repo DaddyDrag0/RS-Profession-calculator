@@ -73,6 +73,34 @@
 3. Select the resource/action  
 4. Check any XP potions  
 5. Click Calculate to see needed actions
+        <!-- Advanced Calculator toggle -->
+        <button id="toggle-mini-calc" class="mini-calc-toggle">
+          Advanced Calculator
+        </button>
+
+        <!-- Mini Calculator (hidden by default) -->
+        <div id="mini-calc" class="card mini-calc">
+          <h3>Quick Math</h3>
+          <div class="input-group">
+            <input type="number" id="mc-num1" placeholder="Number 1">
+          </div>
+          <div class="input-group">
+            <select id="mc-op">
+              <option value="+">+</option>
+              <option value="-">−</option>
+              <option value="*">×</option>
+              <option value="/">÷</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <input type="number" id="mc-num2" placeholder="Number 2">
+          </div>
+          <button id="mc-calc-btn">Compute</button>
+          <div class="summary">
+            Result: <span id="mc-result">—</span>
+          </div>
+        </div>
+
 ">ℹ️</span>
         </h2>
 
