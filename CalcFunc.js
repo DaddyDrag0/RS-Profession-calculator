@@ -7,7 +7,7 @@ const xpOptions = {
   Alchemy:    [{label:"IN DEV",value:0}],
   Fishing:    [{label:"IN DEV",value:0}]
 };
-// Merge all for the Leveling Requirements view
+// Merge all for the leveling table
 xpOptions.Leveling = [
   ...xpOptions.Foraging,
   ...xpOptions.Mining,
@@ -51,7 +51,7 @@ const verbMap = {
   Fishing:    "Fished"
 };
 
-// Element references
+// Element refs
 const profItems      = document.querySelectorAll('#profession-list li');
 const selProfEl      = document.getElementById('selected-prof');
 const viewCalc       = document.getElementById('view-calculator');
@@ -66,24 +66,23 @@ const boostsTable    = document.querySelectorAll('.boost-table');
 const actionsEl      = document.getElementById('actions-needed');
 const historyLog     = document.getElementById('history-log');
 const calcBtn        = document.getElementById('calculate-btn');
-const actionBtn      = document.getElementById('action-btn');
 const updateTableBtn = document.getElementById('update-table-btn');
 const levelTableBody = document.querySelector('#level-table tbody');
 
 let currentProf = null;
 
-// Helper to populate a dropdown with xpOptions
-function populateActions(profKey, dropdownEl) {
-  dropdownEl.innerHTML = '<option value="">-- Select Action --</option>';
+// Populate dropdown helper
+function populateActions(profKey, dropdown) {
+  dropdown.innerHTML = '<option value="">-- Select Action --</option>';
   xpOptions[profKey].forEach(opt => {
     const o = document.createElement('option');
     o.value = opt.value;
     o.textContent = `${opt.label} (${opt.value} XP)`;
-    dropdownEl.appendChild(o);
+    dropdown.appendChild(o);
   });
 }
 
-// Helper to record a history entry
+// Record history helper
 function recordHistory(html) {
   const div = document.createElement('div');
   div.className = 'history-entry';
@@ -91,7 +90,7 @@ function recordHistory(html) {
   historyLog.prepend(div);
 }
 
-// Sidebar click handler: switch views and populate dropdowns
+// Sidebar click: toggle views, populate dropdowns
 profItems.forEach(li => {
   li.addEventListener('click', () => {
     profItems.forEach(el => el.classList.remove('active'));
@@ -108,10 +107,9 @@ profItems.forEach(li => {
       viewCalc.classList.add('active');
       populateActions(currentProf, xpActionEl);
       populateActions(currentProf, tableAction);
-      actionBtn.textContent = verbMap[currentProf] || 'Act';
     }
 
-    // reset inputs and outputs
+    // reset inputs & outputs
     curLevelEl.value = curXpEl.value = tgtLevelEl.value = '';
     xpActionEl.value = tableAction.value = '';
     actionsEl.textContent = '—';
@@ -120,7 +118,7 @@ profItems.forEach(li => {
   });
 });
 
-// Calculate button: sum fractional actions then ceil once
+// Calculate: fractional sum then ceil once
 calcBtn.addEventListener('click', () => {
   const cl    = +curLevelEl.value;
   const curXp = +curXpEl.value;
@@ -140,19 +138,14 @@ calcBtn.addEventListener('click', () => {
   const totalActions = Math.ceil(sumActs);
   actionsEl.textContent = totalActions;
   recordHistory(
-    `<strong>${verbMap[currentProf]}</strong> ${currentProf}: ` +
+    `<strong>${verbMap[currentProf] || 'Action'}</strong> ${currentProf}: ` +
     `L${cl}→L${tl}, Actions: <strong>${totalActions}</strong>`
   );
 });
 
-// Perform Action button (advances level + excess XP logic, plus popup)
-actionBtn.addEventListener('click', () => {
-  alert("Perform Action will advance your level and carry over excess XP. Remember to rejoin for multipliers to update.");
-});
-
-// Update Table button: build per-level rows, show ceil’d per-row, then show a Total row
+// Update Table: per-level ceil + total
 updateTableBtn.addEventListener('click', () => {
-  const base     = +tableAction.value;
+  const base = +tableAction.value;
   if (!currentProf || !base) return;
   const boostPct = Array.from(boostsTable).reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
 
@@ -171,7 +164,6 @@ updateTableBtn.addEventListener('click', () => {
     levelTableBody.appendChild(tr);
   }
 
-  // Append a bold Total row
   const totalRow = document.createElement('tr');
   totalRow.style.fontWeight = 'bold';
   totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
