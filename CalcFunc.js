@@ -192,3 +192,6 @@ document.addEventListener('mouseup', ()=>{
     document.body.style.userSelect='';
   }
 });
+document.addEventListener('DOMContentLoaded', () => {
+  if (profItems.length) profItems[0].click();
+});
