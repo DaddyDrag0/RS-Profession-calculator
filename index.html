@@ -109,10 +109,8 @@
         <button id="update-table-btn">Update Table</button>
         <div class="table-container">
           <table id="level-table">
-            <thead>
-              <tr><th>Level</th><th>Actions Needed</th></tr>
-            </thead>
-            <tbody><!-- filled by JS --></tbody>
+            <thead><tr><th>Level</th><th>Actions Needed</th></tr></thead>
+            <tbody><!-- JS populates --></tbody>
           </table>
         </div>
       </div>
@@ -125,7 +123,7 @@
         <p>Made by: A follow would be appreciated</p>
         <ul>
           <li><a href="https://www.roblox.com/users/1353601323/profile" target="_blank">@_undeadking_</a></li>
-          <li><a href="https://www.roblox.com/users/86468674/profile" target="_blank">@.daddydrago.</a></li>
+          <li><a href="https://www.roblox.com/users/86468674/profile" target="_blank">@.daddydrago</a></li>
         </ul>
       </div>
     </div>
@@ -133,11 +131,8 @@
 
   <!-- Phone-style Calculator Toggle & Draggable Overlay -->
   <button id="open-phone-calc" class="phone-calc-toggle">📱 Calculator</button>
-  <div id="phone-calc-container" class="phone-calc hidden" style="position:absolute; top:50px; left:calc(50% - 160px);">
-    <div class="phone-calc-header" style="cursor:move;">
-      <span>Calculator</span>
-      <button id="close-phone-calc">✕</button>
-    </div>
+  <div id="phone-calc-container" class="phone-calc hidden">
+    <div class="phone-calc-header"><span>Calculator</span><button id="close-phone-calc">✕</button></div>
     <div id="phone-calc-display">0</div>
     <div class="phone-calc-buttons">
       <button data-val="7">7</button><button data-val="8">8</button><button data-val="9">9</button><button data-op="/">÷</button>
