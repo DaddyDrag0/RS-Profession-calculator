@@ -164,3 +164,22 @@ body {
 }
 #phone-calc-equals { background:#0a84ff; color:#fff; }
 #phone-calc-clear { grid-column:span 2; background:#b22121; }
+/* Styles for the credit links */
+.link-button {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: #393939;
+  color: #e0e0e0;
+  box-shadow:
+    inset 4px 4px 8px #222,
+    inset -4px -4px 8px #3a3a3a;
+  transition: all 0.1s;
+}
+.link-button:hover {
+  box-shadow:
+    inset 2px 2px 4px #222,
+    inset -2px -2px 4px #3a3a3a;
+}
