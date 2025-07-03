@@ -33,38 +33,37 @@
       <div class="card">
         <h2>
           XP Calculator
-          <span class="tooltip" title="1. Enter your current and target level (0–60). 
-2. Input your current XP within the current level. 
-3. Select the resource/action. 
-4. Check any active XP potions. 
-5. Click Calculate to see how many actions you need.">ℹ️</span>
+          <span class="tooltip" title="
+1. Enter your current level and XP. 
+2. Enter your target level. 
+3. Select the action/resource. 
+4. Check any XP potions. 
+5. Click Calculate to see how many actions you need.
+">ℹ️</span>
         </h2>
 
         <div class="input-group">
-          <input type="number" id="current-level" placeholder="Current Level (0–60)" min="0" max="60"
-            title="Your current skill level, from 0 up to 60">
+          <input type="number" id="current-level" placeholder="Current Level (0–60)" min="0" max="60" title="Your current level">
         </div>
         <div class="input-group">
-          <input type="number" id="current-xp" placeholder="Current XP" min="0"
-            title="How much XP you’ve already earned toward the next level">
+          <input type="number" id="current-xp" placeholder="Current XP" min="0" title="XP into current level">
         </div>
         <div class="input-group">
-          <input type="number" id="target-level" placeholder="Target Level (0–60)" min="0" max="60"
-            title="The level you want to reach next">
+          <input type="number" id="target-level" placeholder="Target Level (0–60)" min="0" max="60" title="Level you want to reach">
         </div>
         <div class="input-group">
-          <select id="xp-action" title="Choose the resource or action you’re performing">
+          <select id="xp-action" title="Choose the resource or action">
             <option value="">-- Select Action --</option>
           </select>
         </div>
 
-        <div class="input-group-checkbox" title="Check any active XP potions you’re using">
+        <div class="input-group-checkbox" title="Check which XP potions you have">
           <label><input type="checkbox" value="25" class="boost"> Lesser Exp Potion (25%)</label>
           <label><input type="checkbox" value="50" class="boost"> Exp Potion (50%)</label>
           <label><input type="checkbox" value="75" class="boost"> Greater Exp Potion (75%)</label>
         </div>
 
-        <button id="calculate-btn" title="Click to compute how many actions you need">Calculate</button>
+        <button id="calculate-btn" title="Compute required actions">Calculate</button>
 
         <div class="summaries">
           <div class="summary">
@@ -75,15 +74,52 @@
       </div>
     </div>
 
-    <!-- Leveling Requirements View (unchanged) -->
+    <!-- Leveling Requirements View -->
     <div id="view-leveling" class="view">
-      <!-- ... -->
+      <div class="card">
+        <h2>
+          Actions Required per Level (0→1 … 59→60)
+          <span class="tooltip" title="
+1. Select which resource you’re using.
+2. Check any XP potions.
+3. Click Update Table to list actions per level.
+">ℹ️</span>
+        </h2>
+
+        <div class="input-group">
+          <select id="table-action" title="Choose the resource for the table">
+            <option value="">-- Select Action --</option>
+          </select>
+        </div>
+        <div class="input-group-checkbox" title="Check which XP potions you have">
+          <label><input type="checkbox" value="25" class="boost-table"> Lesser Exp Potion (25%)</label>
+          <label><input type="checkbox" value="50" class="boost-table"> Exp Potion (50%)</label>
+          <label><input type="checkbox" value="75" class="boost-table"> Greater Exp Potion (75%)</label>
+        </div>
+
+        <button id="update-table-btn" title="Generate the table below">Update Table</button>
+
+        <div class="table-container">
+          <table id="level-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Actions Needed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated dynamically by CalcFunc.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- History Log -->
     <div id="history-log"></div>
   </section>
 
+  <!-- Your JavaScript logic -->
   <script src="CalcFunc.js"></script>
 </body>
 </html>
