@@ -209,3 +209,37 @@ updateTableBtn.addEventListener('click', () => {
   totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
   levelTableBody.appendChild(totalRow);
 });
+// Mini-calculator show/hide and compute
+const toggleMini = document.getElementById('toggle-mini-calc');
+const miniCalc   = document.getElementById('mini-calc');
+const mcNum1     = document.getElementById('mc-num1');
+const mcNum2     = document.getElementById('mc-num2');
+const mcOp       = document.getElementById('mc-op');
+const mcBtn      = document.getElementById('mc-calc-btn');
+const mcRes      = document.getElementById('mc-result');
+
+toggleMini.addEventListener('click', () => {
+  // toggle visibility
+  if (miniCalc.style.display === 'block') {
+    miniCalc.style.display = 'none';
+    toggleMini.textContent = 'Advanced Calculator';
+  } else {
+    miniCalc.style.display = 'block';
+    toggleMini.textContent = 'Hide Calculator';
+  }
+});
+
+mcBtn.addEventListener('click', () => {
+  const a = parseFloat(mcNum1.value);
+  const b = parseFloat(mcNum2.value);
+  let result = '—';
+  if (!isNaN(a) && !isNaN(b)) {
+    switch (mcOp.value) {
+      case '+': result = a + b; break;
+      case '-': result = a - b; break;
+      case '*': result = a * b; break;
+      case '/': result = b !== 0 ? (a / b) : '∞'; break;
+    }
+  }
+  mcRes.textContent = result;
+});
