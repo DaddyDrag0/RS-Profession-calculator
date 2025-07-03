@@ -1,5 +1,3 @@
-// CalcFunc.js
-
 // -------- Data Maps --------
 const xpOptions = {
   Foraging:   [
@@ -18,41 +16,23 @@ const xpOptions = {
     {label:"Cocoleaf",value:150},{label:"Frostleaf",value:175}
   ],
   Herbalist:  [
-    {label:"Apple",       value:15},
-    {label:"Moss",        value:15},
-    {label:"Vitalshroom", value:15},
-    {label:"Lumishroom",  value:15},
-    {label:"Pineroot",    value:15},
-    {label:"Bahstalk",    value:15},
-    {label:"Coconut",     value:15}
+    {label:"Apple",value:15},{label:"Moss",value:15},{label:"Vitalshroom",value:15},
+    {label:"Lumishroom",value:15},{label:"Pineroot",value:15},{label:"Bahstalk",value:15},
+    {label:"Coconut",value:15}
   ],
   Alchemy: [
-    {label:"Lesser Health Potion",         value: 75 },
-    {label:"Health Potion",                value: 75 },
-    {label:"Greater Health Potion",        value: 75 },
-    {label:"Lesser Mana Potion",           value: 75 },
-    {label:"Mana Potion",                  value: 75 },
-    {label:"Greater Mana Potion",          value: 75 },
-    {label:"Lesser Strength Potion",       value: 75 },
-    {label:"Strength Potion",              value: 75 },
-    {label:"Greater Strength Potion",      value: 75 },
-    {label:"Lesser Agility Potion",        value: 75 },
-    {label:"Agility Potion",               value: 75 },
-    {label:"Greater Agility Potion",       value: 75 },
-    {label:"Heat Protection Potion",       value: 75 },
-    {label:"Cold Protection Potion",       value: 75 }
+    {label:"Lesser Health Potion",value:75},{label:"Health Potion",value:75},{label:"Greater Health Potion",value:75},
+    {label:"Lesser Mana Potion",value:75},{label:"Mana Potion",value:75},{label:"Greater Mana Potion",value:75},
+    {label:"Lesser Strength Potion",value:75},{label:"Strength Potion",value:75},{label:"Greater Strength Potion",value:75},
+    {label:"Lesser Agility Potion",value:75},{label:"Agility Potion",value:75},{label:"Greater Agility Potion",value:75},
+    {label:"Heat Protection Potion",value:75},{label:"Cold Protection Potion",value:75}
   ],
-
   Fishing:    [{label:"IN DEV",value:0}]
 };
-// merge all into one for the Leveling Requirements page
 xpOptions.Leveling = [
-  ...xpOptions.Foraging,
-  ...xpOptions.Mining,
-  ...xpOptions.Harvesting,
-  ...xpOptions.Herbalist,
-  ...xpOptions.Alchemy,
-  ...xpOptions.Fishing
+  ...xpOptions.Foraging, ...xpOptions.Mining,
+  ...xpOptions.Harvesting, ...xpOptions.Herbalist,
+  ...xpOptions.Alchemy,   ...xpOptions.Fishing
 ];
 
 const xpRequirements = {
@@ -80,16 +60,7 @@ const levelMultipliers = {
   54:1100,55:1120,56:1140,57:1160,58:1180,59:1190
 };
 
-const verbMap = {
-  Foraging:   "Foraged",
-  Mining:     "Mined",
-  Harvesting: "Harvested",
-  Herbalist:  "Brewed",
-  Alchemy:    "Crafted",
-  Fishing:    "Fished"
-};
-
-// -------- Element References --------
+// Elements
 const profItems      = document.querySelectorAll('#profession-list li');
 const selProfEl      = document.getElementById('selected-prof');
 const viewCalc       = document.getElementById('view-calculator');
@@ -107,9 +78,14 @@ const calcBtn        = document.getElementById('calculate-btn');
 const updateTableBtn = document.getElementById('update-table-btn');
 const levelTableBody = document.querySelector('#level-table tbody');
 
-let currentProf = null;
+// Phone calc elements
+const openBtn        = document.getElementById('open-phone-calc');
+const closeBtn       = document.getElementById('close-phone-calc');
+const phoneContainer = document.getElementById('phone-calc-container');
+const display        = document.getElementById('phone-calc-display');
+let expr = '';
 
-// -------- Helper Functions --------
+// Helpers
 function populateActions(profKey, dropdown) {
   dropdown.innerHTML = '<option value="">-- Select Action --</option>';
   xpOptions[profKey].forEach(opt => {
@@ -120,21 +96,19 @@ function populateActions(profKey, dropdown) {
   });
 }
 
-// -------- Sidebar Navigation --------
+// Sidebar nav
 profItems.forEach(li => {
   li.addEventListener('click', () => {
-    profItems.forEach(el => el.classList.remove('active'));
+    profItems.forEach(x=>x.classList.remove('active'));
     li.classList.add('active');
-    currentProf = li.dataset.prof;
-    selProfEl.textContent = currentProf;
-
-    // Show/hide views
-    if (currentProf === 'Leveling') {
+    const prof = li.dataset.prof;
+    selProfEl.textContent = prof;
+    if (prof === 'Leveling') {
       viewCalc.classList.remove('active');
       viewCredits.classList.remove('active');
       viewLvl.classList.add('active');
       populateActions('Leveling', tableAction);
-    } else if (currentProf === 'Credits') {
+    } else if (prof === 'Credits') {
       viewCalc.classList.remove('active');
       viewLvl.classList.remove('active');
       viewCredits.classList.add('active');
@@ -142,104 +116,69 @@ profItems.forEach(li => {
       viewLvl.classList.remove('active');
       viewCredits.classList.remove('active');
       viewCalc.classList.add('active');
-      populateActions(currentProf, xpActionEl);
-      populateActions(currentProf, tableAction);
+      populateActions(prof, xpActionEl);
+      populateActions(prof, tableAction);
     }
-
-    // Reset inputs and outputs
-    curLevelEl.value = curXpEl.value = tgtLevelEl.value = '';
-    xpActionEl.value = tableAction.value = '';
-    actionsEl.textContent = '—';
-    levelTableBody.innerHTML = '';
+    // reset
+    curLevelEl.value=curXpEl.value=tgtLevelEl.value='';
+    xpActionEl.value=tableAction.value='';
+    actionsEl.textContent='—';
+    levelTableBody.innerHTML='';
   });
 });
 
-// -------- XP Calculator Logic --------
+// XP calculator
 calcBtn.addEventListener('click', () => {
-  const cl    = +curLevelEl.value;
-  const curXp = +curXpEl.value;
-  const tl    = +tgtLevelEl.value;
-  const base  = +xpActionEl.value;
-  if (!currentProf || isNaN(cl) || isNaN(curXp) || isNaN(tl) || !base) return;
-
-  const boostPct = Array.from(boostsEls)
-    .reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
-
-  let sumActs = 0;
-  for (let lvl = cl; lvl < tl; lvl++) {
-    const xpToNext = (lvl === cl
-      ? xpRequirements[lvl] - curXp
-      : xpRequirements[lvl]);
-    const xpPerAct = base
-      * (levelMultipliers[lvl] || 1)
-      * (1 + boostPct / 100);
-    sumActs += xpToNext / xpPerAct;
+  const cl = +curLevelEl.value, cx = +curXpEl.value, tl = +tgtLevelEl.value;
+  const base = +xpActionEl.value;
+  if (!base || isNaN(cl)||isNaN(cx)||isNaN(tl)) return;
+  const boostPct = Array.from(boostsEls).reduce((s,cb)=>s+(cb.checked?+cb.value:0),0);
+  let sumActs=0;
+  for(let lvl=cl; lvl<tl; lvl++){
+    const xpToNext = (lvl===cl? xpRequirements[lvl]-cx : xpRequirements[lvl]);
+    const xpPerAct = base*(levelMultipliers[lvl]||1)*(1+boostPct/100);
+    sumActs += xpToNext/xpPerAct;
   }
-
   actionsEl.textContent = Math.ceil(sumActs);
 });
 
-// -------- Leveling Table Logic --------
+// Leveling table
 updateTableBtn.addEventListener('click', () => {
   const base = +tableAction.value;
-  if (!currentProf || !base) return;
-  const boostPct = Array.from(boostsTable)
-    .reduce((sum, cb) => sum + (cb.checked ? +cb.value : 0), 0);
-
-  levelTableBody.innerHTML = '';
-  let grandTotal = 0;
-
-  for (let lvl = 0; lvl < 60; lvl++) {
-    const xpNeed   = xpRequirements[lvl];
-    const xpPerAct = base
-      * (levelMultipliers[lvl] || 1)
-      * (1 + boostPct / 100);
-    const actsFrac = xpNeed / xpPerAct;
-    const actsCeil = Math.ceil(actsFrac);
-    grandTotal     += actsFrac;
-
+  if (!base) return;
+  const boostPct = Array.from(boostsTable).reduce((s,cb)=>s+(cb.checked?+cb.value:0),0);
+  levelTableBody.innerHTML='';
+  let grand=0;
+  for(let lvl=0; lvl<60; lvl++){
+    const xpNeed = xpRequirements[lvl];
+    const xpPerAct = base*(levelMultipliers[lvl]||1)*(1+boostPct/100);
+    const frac = xpNeed/xpPerAct;
+    grand += frac;
+    const ceil = Math.ceil(frac);
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${lvl} → ${lvl + 1}</td><td>${actsCeil}</td>`;
+    tr.innerHTML = `<td>${lvl} → ${lvl+1}</td><td>${ceil}</td>`;
     levelTableBody.appendChild(tr);
   }
-
-  // Append bold Total row
-  const totalRow = document.createElement('tr');
-  totalRow.style.fontWeight = 'bold';
-  totalRow.innerHTML = `<td>Total</td><td>${Math.ceil(grandTotal)}</td>`;
+  const totalRow=document.createElement('tr');
+  totalRow.style.fontWeight='bold';
+  totalRow.innerHTML=`<td>Total</td><td>${Math.ceil(grand)}</td>`;
   levelTableBody.appendChild(totalRow);
 });
-// Mini-calculator show/hide and compute
-const toggleMini = document.getElementById('toggle-mini-calc');
-const miniCalc   = document.getElementById('mini-calc');
-const mcNum1     = document.getElementById('mc-num1');
-const mcNum2     = document.getElementById('mc-num2');
-const mcOp       = document.getElementById('mc-op');
-const mcBtn      = document.getElementById('mc-calc-btn');
-const mcRes      = document.getElementById('mc-result');
 
-toggleMini.addEventListener('click', () => {
-  // toggle visibility
-  if (miniCalc.style.display === 'block') {
-    miniCalc.style.display = 'none';
-    toggleMini.textContent = 'Advanced Calculator';
-  } else {
-    miniCalc.style.display = 'block';
-    toggleMini.textContent = 'Hide Calculator';
-  }
+// Phone calculator logic
+openBtn.addEventListener('click', () => phoneContainer.classList.remove('hidden'));
+closeBtn.addEventListener('click', () => phoneContainer.classList.add('hidden'));
+phoneContainer.querySelectorAll('.phone-calc-buttons button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.getAttribute('data-val'), o = btn.getAttribute('data-op');
+    if (v!==null){ expr+=v; display.textContent=expr; }
+    else if (o){ expr+=o; display.textContent=expr; }
+  });
 });
-
-mcBtn.addEventListener('click', () => {
-  const a = parseFloat(mcNum1.value);
-  const b = parseFloat(mcNum2.value);
-  let result = '—';
-  if (!isNaN(a) && !isNaN(b)) {
-    switch (mcOp.value) {
-      case '+': result = a + b; break;
-      case '-': result = a - b; break;
-      case '*': result = a * b; break;
-      case '/': result = b !== 0 ? (a / b) : '∞'; break;
-    }
-  }
-  mcRes.textContent = result;
+document.getElementById('phone-calc-equals').addEventListener('click', () => {
+  try { expr = String(Function(`"use strict";return(${expr})`)()); display.textContent=expr; }
+  catch{ display.textContent='Error'; expr=''; }
+});
+document.getElementById('phone-calc-clear').addEventListener('click', () => {
+  expr=''; display.textContent='0';
 });
