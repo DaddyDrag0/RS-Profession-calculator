@@ -107,7 +107,7 @@ const levelMultipliers = { /* as before */ 0:1,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9
 
 const verbMap = {
   Foraging:"Foraged",Mining:"Mined",Harvesting:"Harvested",
-  Herbalist:"Brewed",Alchemy:"Crafted",Fishing:"Fished"
+  Herbalist:"Brewed",Alchemy:"Crafted",Fishing:"Fished",Combat:"Slain"
 };
 
 // Element refs
