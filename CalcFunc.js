@@ -86,7 +86,7 @@ const xpOptions = {
 xpOptions.Leveling = [
   ...xpOptions.Foraging, ...xpOptions.Mining,
   ...xpOptions.Harvesting, ...xpOptions.Herbalist,
-  ...xpOptions.Alchemy,   ...xpOptions.Fishing
+  ...xpOptions.Alchemy,   ...xpOptions.Fishing,  ...xpOptions.Combat
 ];
 
 const xpRequirements = { /* levels 0–60 as before */ 0:100,1:250,2:400,3:600,4:1000,5:1500,6:2000,7:3000,8:4000,9:7000,
