@@ -19,7 +19,69 @@ const xpOptions = {
                {label:"Greater Strength Potion",value:75},{label:"Lesser Agility Potion",value:75},
                {label:"Agility Potion",value:75},{label:"Greater Agility Potion",value:75},
                {label:"Heat Protection Potion",value:75},{label:"Cold Protection Potion",value:75}],
-  Fishing:    [{label:"IN DEV",value:0}]
+  Fishing:    [{label:"IN DEV",value:0}],
+  Combat: [
+    // Normal mobs – Main Game
+    { label:"Frog",               value:43.85   },
+    { label:"Braelor/Gralthar",   value:134.0625},
+    { label:"Banshee",            value:38.75   },
+    { label:"Hill Troll",         value:158.4375},
+    { label:"Imps",               value:43.75   },
+    { label:"Fiend",              value:47.5    },
+    { label:"Panther",            value:28.75   },
+    { label:"Amphithere",         value:26.25   },
+    { label:"Serpent",            value:31.25   },
+    { label:"Crocodile",          value:33.75   },
+    { label:"Basilisk",           value:121.875 },
+    { label:"Crab",               value:117.8125},
+    { label:"Spider",             value:28.75   },
+    { label:"Adult Spider",       value:33.75   },
+    { label:"Skeleton Mage/Melee",value:18.75   },
+    { label:"Slime",              value:8.75    },
+    { label:"Bee",                value:3.75    },
+    { label:"Deer",               value:6.25    },
+    { label:"Goblins",            value:21.25   },
+    { label:"Mandrake",           value:1.25    },
+    { label:"Giant Bee",          value:10      },
+    { label:"Boar",               value:16.25   },
+    { label:"Wolf",               value:13.75   },
+    { label:"Bear",               value:22.5    },
+    { label:"Rat",                value:11.25   },
+    { label:"Coconut Crab",       value:53.75   },
+    { label:"Lobster",            value:50      },
+    { label:"Skeleton Pirate",    value:48.75   },
+    { label:"Shark/Hammerhead",   value:50      },
+    { label:"Vangar/Vamps",       value:43.75   },
+
+    // Normal mobs – Tundra
+    { label:"Snowman",            value:170.625 },
+    { label:"Snow Wolf",          value:55      },
+    { label:"Sabertooth",         value:56.25   },
+    { label:"Mammoth",            value:182.8125},
+    { label:"Dire Wolf",          value:203.125 },
+    { label:"Cyclops",            value:182.8125},
+    { label:"Wyvern",             value:182.8125},
+
+    // Bosses – Main Game
+    { label:"Drogar",             value:142.1875},
+    { label:"Runic Whale",        value:162.5   },
+    { label:"Razor Fang",         value:81.25   },
+    { label:"Goblin Champion",    value:60.9375 },
+    { label:"Rat King",           value:60.9375 },
+    { label:"Mandrake King",      value:12.5    },
+    { label:"Treant",             value:162.5   },
+    { label:"Lycanthar",          value:162.5   },
+    { label:"Mommy Spider",       value:162.5   },
+    { label:"Dire Bear",          value:171.25  },
+    { label:"Lich",               value:50      },
+    { label:"Gob. King",          value:162.5   },
+    { label:"Slime King",         value:56.875  },
+
+    // Bosses – Tundra
+    { label:"Ice Dragon",         value:203.125 },
+    { label:"Yeti",               value:182.8125},
+    { label:"Ice Golem",          value:182.8125}
+  ]
 };
 xpOptions.Leveling = [
   ...xpOptions.Foraging, ...xpOptions.Mining,
